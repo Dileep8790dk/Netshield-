@@ -1,0 +1,363 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>NetShield - Digital Security</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<style>
+*{margin:0;padding:0;box-sizing:border-box;font-family:'Segoe UI',Tahoma,Geneva,Verdana,sans-serif;}
+body{background: linear-gradient(135deg, #0f2027, #203a43, #2c5364); color:#fff; min-height:100vh; display:flex; justify-content:center; align-items:center; padding:20px;}
+.container{width:100%; max-width:450px; background: rgba(255,255,255,0.05); border-radius:20px; overflow:hidden; box-shadow:0 10px 30px rgba(0,0,0,0.5); position:relative; backdrop-filter: blur(10px);}
+.header{text-align:center;padding:20px;}
+.header h1{font-size:28px; display:flex; justify-content:center; align-items:center; gap:10px;}
+.header i{color:#4CAF50;}
+.logo{text-align:center;margin-bottom:20px;}
+.logo i{font-size:50px;color:#4CAF50;background: rgba(255,255,255,0.1); padding:20px; border-radius:50%;}
+.screen{padding:20px; display:none;}
+.active{display:block;}
+.form-group{margin-bottom:20px;}
+.form-group label{display:block;margin-bottom:8px;font-weight:500;}
+.form-group input, .form-group textarea, .form-group select{width:100%; padding:12px; border-radius:8px; font-size:16px; border:none; background:rgba(255,255,255,0.1); color:#fff;}
+.form-group input::placeholder, .form-group textarea::placeholder{color: #ccc;}
+.form-group select{background:rgba(255,255,255,0.1); color:#fff;}
+.btn{background:#4CAF50; color:white; border:none; padding:12px 20px; border-radius:8px; cursor:pointer; font-size:16px; font-weight:600; width:100%; transition: background 0.3s;}
+.btn:hover{background:#3d8b40;}
+.btn-secondary{background:#6c757d;}
+.btn-secondary:hover{background:#5a6268;}
+.btn-success{background:#4CAF50;}
+.btn-success:hover{background:#3d8b40;}
+.otp-inputs{display:flex; justify-content:space-between; gap:5px; margin-bottom:20px;}
+.otp-input{width:100%; height:50px; text-align:center; font-size:20px; border-radius:8px; border:none; background:rgba(255,255,255,0.1); color:#fff;}
+.nav-tabs{display:flex; justify-content:space-around; background: rgba(255,255,255,0.1); border-radius:10px; margin-bottom:20px;}
+.nav-tab{padding:10px; flex:1; text-align:center; cursor:pointer; border-bottom:3px solid transparent;}
+.nav-tab.active{border-bottom:3px solid #4CAF50; font-weight:600;}
+.scan-result{padding:15px;margin:20px 0;border-radius:8px;text-align:center;font-weight:600;}
+.safe{background:#d4edda;color:#155724;}
+.warning{background:#fff3cd;color:#856404;}
+.danger{background:#f8d7da;color:#721c24;}
+.tip-card{background: rgba(255,255,255,0.1); border-radius:10px; padding:15px; margin:15px 0;}
+.tip-card h3{color:#4CAF50;margin-bottom:10px;}
+.footer{text-align:center;padding:15px;color:#ccc;font-size:14px;}
+.prev-btn{position:absolute;top:15px;left:15px;font-size:16px;color:#4CAF50;cursor:pointer;z-index:10;font-weight:600;display:none;}
+.prev-btn i{margin-right:5px;}
+</style>
+</head>
+<body>
+<div class="container">
+
+    <!-- Previous Button -->
+    <div id="prev-btn" class="prev-btn" onclick="goPrevious()"><i class="fas fa-arrow-left"></i> Previous</div>
+
+    <!-- Header -->
+    <div class="header">
+        <h1><i class="fas fa-shield-alt"></i> NetShield</h1>
+        <p>Protecting you from digital threats</p>
+    </div>
+
+    <!-- Login Screen -->
+    <div id="login-screen" class="screen active">
+        <div class="logo"><i class="fas fa-shield-alt"></i></div>
+        <h2 style="text-align:center;margin-bottom:20px;">Login to Your Account</h2>
+        <div class="form-group">
+            <label for="username">User ID</label>
+            <input type="text" id="username" placeholder="Enter your User ID">
+        </div>
+        <div class="form-group">
+            <label for="password">Password</label>
+            <input type="password" id="password" placeholder="Enter your Password">
+        </div>
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;">
+            <a href="#" style="color:#4CAF50;font-size:14px;" onclick="showScreen('forgot-password-screen')">Forgot Password?</a>
+        </div>
+        <button class="btn" id="submit-btn">Submit</button>
+        <p style="text-align:center;margin-top:20px;">
+            Don't have an account? <a href="#" style="color:#4CAF50;" onclick="showScreen('signup-screen')">Sign Up</a>
+        </p>
+    </div>
+
+    <!-- Forgot Password Screen -->
+    <div id="forgot-password-screen" class="screen">
+        <div class="logo"><i class="fas fa-lock-open"></i></div>
+        <h2 style="text-align:center;margin-bottom:20px;">Forgot Password</h2>
+        <div class="form-group">
+            <label for="forgot-phone">Phone Number</label>
+            <input type="tel" id="forgot-phone" placeholder="Enter your phone number">
+        </div>
+        <div class="form-group">
+            <label>Enter OTP</label>
+            <div class="otp-inputs">
+                <input type="text" class="otp-input" maxlength="1">
+                <input type="text" class="otp-input" maxlength="1">
+                <input type="text" class="otp-input" maxlength="1">
+                <input type="text" class="otp-input" maxlength="1">
+            </div>
+        </div>
+        <button class="btn" id="reset-password-btn">Reset Password</button>
+    </div>
+
+    <!-- Sign Up Screen -->
+    <div id="signup-screen" class="screen">
+        <div class="logo"><i class="fas fa-user-plus"></i></div>
+        <h2 style="text-align:center;margin-bottom:20px;">Create Your Account</h2>
+
+        <div class="form-group">
+            <label for="signup-username">User ID</label>
+            <input type="text" id="signup-username" placeholder="Choose a User ID">
+        </div>
+        <div class="form-group">
+            <label for="signup-email">Email</label>
+            <input type="email" id="signup-email" placeholder="Enter your email">
+        </div>
+        <div class="form-group">
+            <label for="signup-phone">Phone Number</label>
+            <input type="tel" id="signup-phone" placeholder="Enter your phone number">
+        </div>
+        
+        <div class="form-group">
+            <label for="signup-password">Password</label>
+            <input type="password" id="signup-password" placeholder="Enter your Password">
+        </div>
+        <div class="form-group">
+            <label for="signup-confirm-password">Confirm Password</label>
+            <input type="password" id="signup-confirm-password" placeholder="Confirm your Password">
+        </div>
+
+        <div class="form-group">
+            <label>Enter OTP</label>
+            <div class="otp-inputs">
+                <input type="text" class="signup-otp-input" maxlength="1">
+                <input type="text" class="signup-otp-input" maxlength="1">
+                <input type="text" class="signup-otp-input" maxlength="1">
+                <input type="text" class="signup-otp-input" maxlength="1">
+            </div>
+        </div>
+
+        <button class="btn" id="signup-btn">Sign Up</button>
+        <p style="text-align:center;margin-top:20px;">
+            Already have an account? <a href="#" style="color:#4CAF50;" onclick="showScreen('login-screen')">Login</a>
+        </p>
+    </div>
+
+    <!-- Home Screen -->
+    <div id="home-screen" class="screen">
+        <div class="nav-tabs">
+            <div class="nav-tab active" onclick="showScreen('scanner-screen')">Check</div>
+            <div class="nav-tab" onclick="showScreen('report-screen')">Report</div>
+            <div class="nav-tab" onclick="showScreen('image-scan-screen')">Scan Image</div>
+            <div class="nav-tab" onclick="showScreen('education-screen')">Learn</div>
+        </div>
+        <h2 style="text-align:center;">Welcome to NetShield</h2>
+        <div style="display:flex;flex-direction:column;gap:15px;margin-top:30px;">
+            <button class="btn" onclick="showScreen('scanner-screen')"><i class="fas fa-search"></i> Check Scam URL/Text</button>
+            <button class="btn btn-secondary" onclick="showScreen('report-screen')"><i class="fas fa-exclamation-circle"></i> Report Incident</button>
+            <button class="btn btn-success" onclick="showScreen('image-scan-screen')"><i class="fas fa-image"></i> Scan Image for Malware</button>
+            <button class="btn" onclick="showScreen('education-screen')"><i class="fas fa-graduation-cap"></i> Learn Safety Tips</button>
+        </div>
+        <div class="footer">Stay safe online with NetShield</div>
+    </div>
+
+    <!-- Scanner Screen -->
+    <div id="scanner-screen" class="screen">
+        <div class="nav-tabs">
+            <div class="nav-tab active" onclick="showScreen('scanner-screen')">Check</div>
+            <div class="nav-tab" onclick="showScreen('report-screen')">Report</div>
+            <div class="nav-tab" onclick="showScreen('image-scan-screen')">Scan Image</div>
+            <div class="nav-tab" onclick="showScreen('education-screen')">Learn</div>
+        </div>
+        <h2>Scam Checker</h2>
+        <div class="form-group">
+            <label for="scan-input">URL or Message</label>
+            <textarea id="scan-input" placeholder="Paste suspicious link or message here..."></textarea>
+        </div>
+        <button class="btn" id="check-scam-btn">Check Now</button>
+        <div id="scan-result" class="scan-result" style="display:none;"></div>
+    </div>
+
+    <!-- Report Screen -->
+    <div id="report-screen" class="screen">
+        <div class="nav-tabs">
+            <div class="nav-tab" onclick="showScreen('scanner-screen')">Check</div>
+            <div class="nav-tab active" onclick="showScreen('report-screen')">Report</div>
+            <div class="nav-tab" onclick="showScreen('image-scan-screen')">Scan Image</div>
+            <div class="nav-tab" onclick="showScreen('education-screen')">Learn</div>
+        </div>
+        <h2>Report Incident</h2>
+        <div class="form-group">
+            <label for="incident-type">Incident Type</label>
+            <select id="incident-type">
+                <option>Phishing Attempt</option>
+                <option>Suspicious Message</option>
+                <option>Fake Website</option>
+                <option>Financial Scam</option>
+                <option>Other</option>
+            </select>
+        </div>
+        <div class="form-group">
+            <label for="incident-details">What happened?</label>
+            <textarea id="incident-details" placeholder="Describe the incident in details..."></textarea>
+        </div>
+        <button class="btn" id="submit-report-btn">Submit Report</button>
+    </div>
+
+    <!-- Image Scan Screen -->
+    <div id="image-scan-screen" class="screen">
+        <div class="nav-tabs">
+            <div class="nav-tab" onclick="showScreen('scanner-screen')">Check</div>
+            <div class="nav-tab" onclick="showScreen('report-screen')">Report</div>
+            <div class="nav-tab active" onclick="showScreen('image-scan-screen')">Scan Image</div>
+            <div class="nav-tab" onclick="showScreen('education-screen')">Learn</div>
+        </div>
+        <h2>Image Malware Scanner</h2>
+        <div class="form-group">
+            <label for="image-upload">Upload Image</label>
+            <input type="file" id="image-upload" accept="image/*">
+        </div>
+        <button class="btn" id="scan-image-btn">Scan Image</button>
+        <div id="image-scan-result" class="scan-result" style="display:none;"></div>
+    </div>
+
+    <!-- Education Screen -->
+    <div id="education-screen" class="screen">
+        <div class="nav-tabs">
+            <div class="nav-tab" onclick="showScreen('scanner-screen')">Check</div>
+            <div class="nav-tab" onclick="showScreen('report-screen')">Report</div>
+            <div class="nav-tab" onclick="showScreen('image-scan-screen')">Scan Image</div>
+            <div class="nav-tab active" onclick="showScreen('education-screen')">Learn</div>
+        </div>
+        <h2>Safety Tips</h2>
+        <div class="tip-card">
+            <h3>Tip 1:</h3>
+            <p>Always verify URLs before clicking links from unknown sources.</p>
+        </div>
+        <div class="tip-card">
+            <h3>Tip 2:</h3>
+            <p>Never share personal information via unsecured channels.</p>
+        </div>
+        <div class="tip-card">
+            <h3>Tip 3:</h3>
+            <p>Use strong passwords and enable two-factor authentication.</p>
+        </div>
+    </div>
+
+</div>
+
+<script>
+// Navigation with history
+let screenHistory = ['login-screen'];
+function showScreen(id){
+    document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+    document.getElementById(id).classList.add('active');
+    if(screenHistory[screenHistory.length-1] !== id) screenHistory.push(id);
+    document.getElementById('prev-btn').style.display = (id==='login-screen')?'none':'block';
+}
+function goPrevious(){
+    if(screenHistory.length>1){
+        screenHistory.pop();
+        const prev = screenHistory[screenHistory.length-1];
+        document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+        document.getElementById(prev).classList.add('active');
+        document.getElementById('prev-btn').style.display = (prev==='login-screen')?'none':'block';
+    }
+}
+
+// Login
+document.getElementById('submit-btn').addEventListener('click', ()=>{
+    if(document.getElementById('username').value && document.getElementById('password').value){showScreen('home-screen');}
+    else alert('Enter User ID and Password');
+});
+
+// OTP auto-focus for Forgot Password
+const otpInputs=document.querySelectorAll('.otp-input');
+otpInputs.forEach((input,i)=>{
+    input.addEventListener('input',e=>{if(e.inputType!=='deleteContentBackward' && i<otpInputs.length-1) otpInputs[i+1].focus();});
+    input.addEventListener('keydown',e=>{if(e.key==='Backspace' && i>0 && input.value==='') otpInputs[i-1].focus();});
+});
+
+// Auto-send OTP (mock)
+document.getElementById("forgot-phone").addEventListener("input", e=>{
+    if(e.target.value.length===10){alert("OTP sent to "+e.target.value);}
+});
+
+// Reset Password
+document.getElementById('reset-password-btn').addEventListener('click', ()=>{
+    alert("Password reset successful. Please log in with your new password.");
+    showScreen('login-screen');
+});
+
+// Scanner
+document.getElementById('check-scam-btn').addEventListener('click', ()=>{
+    const val = document.getElementById('scan-input').value;
+    const resultDiv = document.getElementById('scan-result');
+    if(!val){alert("Enter URL or message"); return;}
+    if(val.includes("scam")) resultDiv.className="scan-result danger";
+    else if(val.includes("warning")) resultDiv.className="scan-result warning";
+    else resultDiv.className="scan-result safe";
+    resultDiv.style.display="block";
+    resultDiv.textContent = "Scan Result: " + resultDiv.className.split(' ')[1].toUpperCase();
+});
+
+// Report
+document.getElementById('submit-report-btn').addEventListener('click', ()=>{
+    alert("Report submitted successfully.");
+});
+
+// Image Scan
+document.getElementById('scan-image-btn').addEventListener('click', ()=>{
+    const file = document.getElementById('image-upload').files[0];
+    if(!file){alert("Upload an image"); return;}
+    document.getElementById('image-scan-result').style.display="block";
+    document.getElementById('image-scan-result').textContent="Image scanned successfully. No threats found.";
+});
+
+// --- Sign Up Feature ---
+let generatedOtp = "";
+
+// OTP auto-focus for Sign Up
+const signupOtpInputs = document.querySelectorAll('.signup-otp-input');
+signupOtpInputs.forEach((input, i) => {
+    input.addEventListener('input', e => {
+        if(e.inputType !== 'deleteContentBackward' && i < signupOtpInputs.length - 1) signupOtpInputs[i + 1].focus();
+    });
+    input.addEventListener('keydown', e => {
+        if(e.key === 'Backspace' && i > 0 && input.value === '') signupOtpInputs[i - 1].focus();
+    });
+});
+
+// Generate OTP when phone number reaches 10 digits
+document.getElementById("signup-phone").addEventListener("input", e => {
+    if(e.target.value.length === 10){
+        generatedOtp = Math.floor(1000 + Math.random() * 9000).toString();
+        alert("OTP sent to " + e.target.value + ": " + generatedOtp);
+        signupOtpInputs.forEach(i => i.value = "");
+    }
+});
+
+// Sign Up with OTP verification
+document.getElementById('signup-btn').addEventListener('click', ()=>{
+    const username = document.getElementById('signup-username').value;
+    const email = document.getElementById('signup-email').value;
+    const phone = document.getElementById('signup-phone').value;
+    const password = document.getElementById('signup-password').value;
+    const confirmPassword = document.getElementById('signup-confirm-password').value;
+    const otp = Array.from(signupOtpInputs).map(i => i.value).join('');
+
+    if(!username || !email || !phone || !password || !confirmPassword || otp.length < 4){
+        alert("Please fill all fields and enter OTP");
+        return;
+    }
+    if(password !== confirmPassword){
+        alert("Passwords do not match");
+        return;
+    }
+    if(otp !== generatedOtp){
+        alert("Incorrect OTP. Please try again.");
+        return;
+    }
+
+    alert("Account created successfully! You can now log in.");
+    showScreen('login-screen');
+});
+</script>
+</body>
+</html>
